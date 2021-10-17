@@ -8,11 +8,12 @@
         cidr_block: "{{ vpc_cidr }}"
         region: "{{ aws_region }}"
         tenancy: default
+       register: Ebrox-VPC
 
     - name: create a Public Subnet
       ec2_vpc_subnet:
         state: present
-        vpc_id: "{{ vpc_id }}"
+        vpc_id: "{{ Ebrox-VPC.vpc.id }}"
         cidr: "{{ PublicSubnet_cidr }}"
         tags:
           Name: Ebrox-Public-Subnet
@@ -21,7 +22,7 @@
     - name: create a Private Subnet
       ec2_vpc_subnet:
         state: present
-        vpc_id: "{{ vpc_id }}"
+        vpc_id: "{{ Ebrox-VPC.vpc.id }}"
         cidr: "{{ PrivateSubnet_cidr }}"
         tags:
           Name: Ebrox-Private-Subnet
@@ -29,14 +30,14 @@
 
     - name: create an Internet Gateway
       ec2_vpc_igw:
-        vpc_id: "{{ vpc_id }}"
+        vpc_id: "{{ Ebrox-VPC.vpc.id }}"
         state: present
       register: Ebrox-IGW
 
 
     - name: Set up public route table
       ec2_vpc_route_table:
-        vpc_id: "{{ vpc_id }}"
+        vpc_id: "{{ Ebrox-VPC.vpc.id }}"
         region: "{{ aws_region }}"
         tags:
           Name: Ebrox-Public-Subnet-route-table
@@ -48,7 +49,7 @@
 
     - name: Set up private route table
       ec2_vpc_route_table:
-        vpc_id: "{{ vpc_id }}"
+        vpc_id: "{{ Ebrox-VPC.vpc.id }}"
         region: "{{ aws_region }}"
         tags:
           Name: Ebrox-Private-Subnet-route-table
@@ -62,7 +63,7 @@
       ec2_group:
         name: Ebrox-VPC-SG
         description: Ebrox security group
-        vpc_id: "{{ vpc_id }}"
+        vpc_id: "{{ Ebrox-VPC.vpc.id }}"
         region: "{{ aws_region }}"
         rules:
           - proto: tcp
