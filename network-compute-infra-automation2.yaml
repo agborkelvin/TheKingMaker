@@ -34,7 +34,6 @@
         state: present
       register: Ebrox-IGW
 
-
     - name: Set up public route table
       ec2_vpc_route_table:
         vpc_id: "{{ Ebrox-VPC.vpc.id }}"
