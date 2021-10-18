@@ -37,7 +37,6 @@
         state: present
       register: Ebrox_IGW
 
-
     - name: Set up public route table
       ec2_vpc_route_table:
         vpc_id: "{{ Ebrox_VPC.vpc.id }}"
@@ -81,12 +80,12 @@
             cidr_ip: 0.0.0.0/0
             rule_desc: allow all on port 22
 
-    - name: create ec2 instance using centOs7
+    - name: create ec2 instance using CentOS 7
       ec2_instance:
         name: Ebrox_EC2
         key_name: "{{ keypair_name }}"
         region: "{{ aws_region }}"
-        vpc_subnet_id: Ebrox_Public_Subnet
+        vpc_subnet_id: "{{ Ebrox_Public_Subnet.subnet.id }}"
         instance_type: t2.micro
         security_group: "{{ securitygroup_name }}"
         network:
